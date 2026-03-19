@@ -18,3 +18,7 @@ Brainlife App to create an Evoked data structure, given an Epochs object and con
 
 ## Authors
 - Kamilya Salibayeva (ksalibay@iu.edu)
+
+## Citation
+
+Hayashi, S., Caron, B.A., Heinsfeld, A.S. et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. Nat Methods 21, 809–813 (2024). https://doi.org/10.1038/s41592-024-02237-2

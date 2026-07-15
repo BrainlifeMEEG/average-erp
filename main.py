@@ -1,74 +1,91 @@
-#!/usr/bin/env python3
+"""
+Average epoched data into an evoked response.
 
-# Evoked is a datatype that contains the result of averaging an Epochs structure based on several criteria.
-import mne
-import json
-import os
-import os.path as op
-import matplotlib.pyplot as plt
-from pathlib import Path
-import tempfile
-import numpy as np
-import matplotlib.pyplot as plt
+This app loads epoched MNE data and averages either all epochs together
+or a selected subset of stimulus conditions, producing an evoked
+response, a joint plot, and a QC report.
+
+Inputs:
+    - fname: Path to epoched MNE data (.fif)
+    - average-all: If true, average all epochs together
+    - stimulus_names: Comma-separated stimulus conditions to average (used when average-all is false)
+    - condition: Name of the condition being averaged (used when average-all is false)
+    - peaks: Comma-separated peak times for plot_joint, or "None" for automatic
+
+Outputs:
+    - out_dir/ave.fif: Evoked data in MNE format
+    - out_figs/evoked.png: Evoked joint plot
+    - out_report/report.html: HTML report with the evoked response
+    - product.json: Metadata about the averaging
+"""
+
+# Copyright (c) 2026 brainlife.io
+#
+# Author: Guiomar Niso
+
 import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'brainlife_utils'))
 
-#workaround for -- _tkinter.TclError: invalid command name ".!canvas"
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
+# Standard imports
+import mne
 
-# Current path
-__location__ = os.path.realpath(
-    os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# Import shared utilities
+from brainlife_utils import (
+    load_config,
+    setup_matplotlib_backend,
+    ensure_output_dirs,
+    create_product_json,
+    add_info_to_product,
+    add_image_to_product,
+    require_config_keys
+)
 
-# Load inputs from config.json
-with open('config.json') as config_json:
-    config = json.load(config_json)
+# Set up matplotlib for headless execution
+setup_matplotlib_backend()
 
-# Read the meg file
-epochs = config.pop('fname')
-# Read in the epochs file
-epo = mne.read_epochs(epochs)
+# Ensure output directories exist
+ensure_output_dirs('out_dir', 'out_figs', 'out_report')
 
-#Read in the average-all bool from config
-average_all = config.pop('average-all')
+# Load configuration
+config = load_config()
+require_config_keys(config, ['fname', 'average-all', 'peaks'])
 
-#If average_all is true, average all epochs
-if average_all == 'True':
-    epo = epo.average()
+# == LOAD DATA ==
+epo = mne.read_epochs(config['fname'])
+
+# == AVERAGE ==
+average_all = config['average-all']
+if average_all is True or average_all == 'True':
+    evo = epo.average()
     cond = 'All'
 else:
-    # Read the names of the stimuli and the name of the condition
-    stimuli = config.pop('stimulus_names')
-    stimuli = stimuli.split(',')
-    #Create the evoked object from epo at stimulus conditions
+    stimuli = config['stimulus_names'].split(',')
     evo = epo[stimuli].average()
-    cond = config.pop('condition')
-    
-peaks = config.pop('peaks')
+    cond = config['condition']
 
+peaks = config['peaks']
 if peaks == 'None':
     peaks = 'auto'
 else:
-    peaks = peaks.split(',')
-    peaks = [float(i) for i in peaks]
+    peaks = [float(i) for i in peaks.split(',')]
 
-#Create figure of evoked response
-fig = evo.plot_joint(times = peaks)
+# == CREATE FIGURE ==
+fig = evo.plot_joint(times=peaks)
+fig_path = os.path.join('out_figs', 'evoked.png')
+fig.savefig(fig_path)
 
-report = mne.Report(title='Report')
+# == CREATE REPORT ==
+report = mne.Report(title='Evoked Averaging Report')
+report.add_evokeds(evo, titles=f'Evoked response for condition {cond}')
+report.add_figure(fig, title=f'Evoked response for condition {cond}')
+report.save(os.path.join('out_report', 'report.html'), overwrite=True)
 
-#Add evoked to the report
-report.add_evokeds(evo, titles='Evoked response for condition '+cond)
-
-#Add figure of evoked response to the report
-report.add_figure(fig, title='Evoked response for condition '+cond)
-
-# == SAVE REPORT ==
-report.save(os.path.join('out_dir_report','report.html'))
-
-# == SAVE FIGURE ==
-fig.savefig(os.path.join('out_figs', 'evoked.png'))
-
- # == SAVE FILE ==
+# == SAVE FILE ==
 evo.save(os.path.join('out_dir', 'ave.fif'), overwrite=True)
+
+# == CREATE PRODUCT.JSON ==
+product_items = []
+add_info_to_product(product_items, f'Averaged evoked response for condition "{cond}"', 'success')
+add_image_to_product(product_items, 'Evoked response', filepath=fig_path)
+create_product_json(product_items)

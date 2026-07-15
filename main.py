@@ -31,7 +31,7 @@ epochs = config.pop('fname')
 epo = mne.read_epochs(epochs)
 
 #Read in the average-all bool from config
-average_all = config.pop('average_all')
+average_all = config.pop('average-all')
 
 #If average_all is true, average all epochs
 if average_all == 'True':

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#PBS -l nodes=1:ppn=8
-#PBS -l walltime=02:00:00
-#SBATCH --mem=32G
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=00:30:00
+#SBATCH --mem=8G
 
 set -x
 set -e

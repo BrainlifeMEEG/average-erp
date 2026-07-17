@@ -49,13 +49,13 @@ ensure_output_dirs('out_dir', 'out_figs', 'out_report')
 
 # Load configuration
 config = load_config()
-require_config_keys(config, ['epo', 'average-all', 'peaks'])
+require_config_keys(config, ['epo', 'average_all', 'peaks'])
 
 # == LOAD DATA ==
 epo = mne.read_epochs(config['epo'])
 
 # == AVERAGE ==
-average_all = config['average-all']
+average_all = config['average_all']
 if average_all is True or average_all == 'True':
     evo = epo.average()
     cond = 'All'

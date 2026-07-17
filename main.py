@@ -79,7 +79,7 @@ fig.savefig(fig_path)
 report = mne.Report(title='Evoked Averaging Report')
 report.add_evokeds(evo, titles=f'Evoked response for condition {cond}')
 report.add_figure(fig, title=f'Evoked response for condition {cond}')
-report.save(os.path.join('out_report', 'report.html'), overwrite=True)
+report.save(os.path.join('out_report', 'report.html'), overwrite=True, verbose=False)
 
 # == SAVE FILE ==
 evo.save(os.path.join('out_dir', 'ave.fif'), overwrite=True)

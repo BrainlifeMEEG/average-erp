@@ -71,9 +71,19 @@ else:
     peaks = [float(i) for i in peaks.split(',')]
 
 # == CREATE FIGURE ==
+# plot_joint() returns a single Figure only when the data has one channel
+# type; with multiple types (mag+grad+eeg here) it returns a list, one
+# figure per type -- report.add_figure() below already accepts either form
+# natively, but a plain fig.savefig() doesn't. Normalize to a list and
+# save each one.
 fig = evo.plot_joint(times=peaks)
-fig_path = os.path.join('out_figs', 'evoked.png')
-fig.savefig(fig_path)
+figs = fig if isinstance(fig, list) else [fig]
+fig_paths = []
+for i, f in enumerate(figs):
+    fp = os.path.join('out_figs', 'evoked.png' if len(figs) == 1 else f'evoked_{i}.png')
+    f.savefig(fp)
+    fig_paths.append(fp)
+fig_path = fig_paths[0]
 
 # == CREATE REPORT ==
 report = mne.Report(title='Evoked Averaging Report')

@@ -136,7 +136,13 @@ for evo in evo_list:
         else:
             fname, label = f'evoked_{evo.comment}_{i}.png', f'Evoked response: {evo.comment} ({i})'
         fp = os.path.join('out_figs', fname)
-        fig_base64[label] = save_figure_with_base64(f, fp, dpi_file=150, dpi_base64=80)
+        # dpi_base64=80 was still too high -- confirmed for real: 2
+        # conditions x 3 channel-type figures each (mag/grad/eeg) pushed
+        # product.json to 1.16MB, over the 1MB cap, even downsized from
+        # dpi_file=150. 30 matches what ICA-fit needed for the same
+        # "several images embedded" shape (proven safe there: 6 images,
+        # 461KB total) -- comfortable margin here too.
+        fig_base64[label] = save_figure_with_base64(f, fp, dpi_file=150, dpi_base64=30)
 
 report.save(os.path.join('out_report', 'report.html'), overwrite=True, verbose=False)
 

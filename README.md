@@ -6,16 +6,11 @@ one or more named groups of conditions to average.
 1) Input file is:
     * `epo` data file for the Epochs object
 2) Input strings are:
-    * `stimulus_names` — the stimulus/condition names to average. To produce **several** Evokeds in
-      one run, separate independent groups with `;`; within a group, conditions are still pooled
-      together with `,` (unchanged meaning). Example:
-      `face/famous,face/unfamiliar;scrambled/famous,scrambled/unfamiliar` produces two Evokeds, one
-      pooling the two face conditions, one pooling the two scrambled conditions. A value with no `;`
-      is a single group — identical to giving just one condition list.
-    * `condition` — a name for each group above, matching 1:1, `;`-separated the same way (e.g.
-      `face;scrambled` for the example above). Used as each output Evoked's `comment`.
-    * `peaks` — comma-separated time values (seconds) to show topomaps at on the joint plot, applied
-      to every group, or `None` for MNE's automatic peak selection.
+    * `stimulus_names` — the stimulus/condition names to average. To produce **several** Evokeds in one run, separate independent groups with `;`; within a group, conditions are still pooled together with `,` (unchanged meaning). Example:
+      `face/famous,face/unfamiliar;scrambled` produces two Evokeds, one
+      pooling the two face conditions, one pooling the scrambled condition. A value with no `;` is a single group — identical to giving just one condition list.
+    * `condition` — a name for each group above, matching 1:1, `;`-separated the same way (e.g. `face;scrambled` for the example above). Used as each output Evoked's `comment`.
+    * `peaks` — comma-separated time values (seconds) to show topomaps at on the joint plot, applied to every group, or `None` for MNE's automatic peak selection.
 3) Input boolean is:
     * `average_all` — if true, average **all** epochs into a single Evoked named `"All"`, ignoring
       `stimulus_names`/`condition` entirely.
@@ -29,7 +24,8 @@ one or more named groups of conditions to average.
 
 
 ## Authors
-- Kamilya Salibayeva (ksalibay@iu.edu)
+- Kamilya Salibayeva
+- Maximilien Chaumon (https://github.com/dnacombo)
 
 ## Citation
 

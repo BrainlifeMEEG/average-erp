@@ -109,7 +109,7 @@ else:
 multi = len(evo_list) > 1
 
 # == CREATE REPORT (figures added here, before any are closed below) ==
-report = mne.Report(title='Evoked Averaging Report')
+report = mne.Report(title='Evoked Averaging Report', verbose=False)
 report.add_evokeds(
     evo_list if multi else evo_list[0],
     titles=[e.comment for e in evo_list] if multi else evo_list[0].comment,

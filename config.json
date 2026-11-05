@@ -1,6 +1,6 @@
 {
 
-    "fname": "/N/slate/ksalibay/DataLatinus/S01/ContinuousDataFiles/epo.fif",
+    "fname": "/path/to/sub-01_task-example_epo.fif",
     "stimulus_names": "LEA_D_2,REA_D_2",
     "condition": "Ext-Dir",
     "average-all": false,

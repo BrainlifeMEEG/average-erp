@@ -1,5 +1,51 @@
 # Average ERPs
 
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+> **Brainlife.io app: average MEG/EEG epochs into one or more condition ERPs (Evoked)**
+
+Uses Epochs.average() either on all epochs or on named groups of conditions (';'-separated) to produce one or more Evoked objects, saved together in ave.fif, with a joint plot per group and an HTML report. Use it after epoching to get ERPs/ERFs per condition.
+
+| | |
+|---|---|
+| 📥 **Inputs** | `neuro/meeg/mne/epochs` |
+| 📤 **Outputs** | `neuro/meeg/mne/evoked` · `generic/image/png` · `report/html` |
+| 🐳 **Container** | `brainlifemeeg/mne:1.12.1` |
+| ⚙️ **Resources** | 1 CPUs · 8 GB memory |
+| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.949](https://doi.org/10.25663/brainlife.app.949) |
+
+#### 📥 Inputs
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `evoked` | `neuro/meeg/mne/epochs` | yes | Epoched MEG/EEG data (MNE -epo.fif). |
+
+#### 📤 Outputs
+
+| Output | Datatype | Description |
+|---|---|---|
+| `out_dir` | `neuro/meeg/mne/evoked` | One or more Evoked objects (ave.fif). |
+| `out_figs` | `generic/image/png` | Joint ERP plots per condition group. |
+| `out_dir_report` | `report/html` | HTML report with evoked traces and joint plots. |
+
+<details>
+<summary><b>⚙️ Parameters</b> (4)</summary>
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `average_all` | boolean | `false` | Do you want all of your epoch types/stimuli/conditions to be averaged together? If not, enter the names of the epoch types/stimuli/conditions in the string below. |
+| `stimulus_names` | string |  | Stimulus/condition names to average. To produce SEVERAL Evokeds in one run, separate independent groups with ";"; within a group, conditions are still pooled together with "," (e.g. "face/famous,face/unfamiliar;scrambled/famous,scrambled/unfamiliar" produces two Evokeds). A value with no ";" is a single group -- one Evoked, same as before. |
+| `condition` | string |  | Name(s) for each group in stimulus_names, matching 1:1 and ";"-separated the same way (e.g. "face;scrambled" for the example above). Used as each output Evoked's label. Just enter the name(s) with no quotation marks. |
+| `peaks` | string | `None` | Add a list (comma-separated) of time values at which you would like to display topomaps on a joint ERP plot. |
+
+</details>
+
+📚 **References used by this App:**
+- Hayashi S, et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. Nat Methods 21:809-813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
+- Gramfort A, et al. MEG and EEG data analysis with MNE-Python. Front Neurosci 7:267 (2013). [doi:10.3389/fnins.2013.00267](https://doi.org/10.3389/fnins.2013.00267)
+
+<!-- brainlife-app:end -->
+
 [![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.949-blue.svg)](https://doi.org/10.25663/brainlife.app.949)
 
 ## Description
